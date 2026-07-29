@@ -75,7 +75,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
     playSwitchSound();
     setIsSwitchedOn(true);
     
-    // 1. Flash white at 150ms (simulating light contact)
+    // 1. Flash white at 150ms
     setTimeout(() => {
       setIsFlashing(true);
     }, 150);
@@ -86,7 +86,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
       setIsFading(true);
     }, 350);
 
-    // 3. Complete the transition and unmount after fade completes (700ms animation)
+    // 3. Complete the transition and unmount after fade completes
     setTimeout(() => {
       onComplete();
     }, 1050);
@@ -110,142 +110,138 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
   return (
     <div 
       className={cn(
-        "fixed inset-0 z-[9999] flex flex-col md:flex-row items-center justify-center bg-zinc-950 text-white overflow-hidden select-none px-6 py-8 md:p-12 gap-8 transition-all",
+        "fixed inset-0 z-[9999] bg-zinc-950 text-white overflow-hidden select-none transition-all",
         isFlashing && "bg-white text-zinc-950 duration-200",
         isFading ? "opacity-0 duration-700 pointer-events-none" : "opacity-100"
       )}
     >
-      {/* Main Intro content container */}
-      <div className="flex-1 flex flex-col items-center justify-center max-w-2xl w-full gap-6 transition-all duration-500">
-        <h2 className={cn(
-          "text-2xl md:text-3xl font-semibold tracking-tight text-center bg-gradient-to-r bg-clip-text text-transparent transition-all duration-500",
-          isFlashing ? "from-black to-black animate-none" : "from-teal-400 to-purple-400"
-        )}>
-          Harshit Satti — Backend Developer
-        </h2>
+      {/* Fullscreen Video / Photo Background */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+        {isVideoError ? (
+          /* Fullscreen Fallback Profile Image */
+          <div className="w-full h-full relative">
+            <img 
+              src="/intro-photo.jpg" 
+              alt="Harshit Satti" 
+              className="w-full h-full object-cover filter brightness-[0.5] hover:brightness-[0.55] transition-all duration-500"
+            />
+          </div>
+        ) : (
+          /* Fullscreen AI Talking Video Player */
+          <div className="w-full h-full relative">
+            <video
+              ref={videoRef}
+              src="/intro-video.mp4"
+              className="w-full h-full object-cover filter brightness-[0.5]"
+              loop
+              muted={isMuted}
+              autoPlay
+              playsInline
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onError={() => setIsVideoError(true)}
+            />
+          </div>
+        )}
 
-        {/* Video / Photo Avatar Box */}
-        <div className="relative w-full aspect-[4/3] max-w-lg rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 shadow-2xl shadow-purple-500/10 group">
-          {isVideoError ? (
-            /* Fallback Profile Image */
-            <div className="w-full h-full relative">
-              <img 
-                src="/intro-photo.jpg" 
-                alt="Harshit Satti" 
-                className="w-full h-full object-cover filter brightness-75 hover:brightness-90 transition-all duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
-              <div className="absolute top-4 left-4 bg-zinc-950/80 border border-zinc-700/50 backdrop-blur px-3 py-1 rounded-full text-xs text-teal-400 font-medium">
-                Photo Mode (Fallback)
-              </div>
-            </div>
-          ) : (
-            /* AI Talking Video Player (Plays public/intro-video.mp4 if present) */
-            <div className="w-full h-full relative">
-              <video
-                ref={videoRef}
-                src="/intro-video.mp4"
-                className="w-full h-full object-cover filter brightness-75"
-                loop
-                muted={isMuted}
-                autoPlay
-                playsInline
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onError={() => setIsVideoError(true)}
-              />
-              
-              {/* Video overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-75 pointer-events-none" />
+        {/* Ambient Dark Overlay to make text and controls legible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/80 z-10 pointer-events-none" />
+      </div>
 
-              {/* Controls Overlay */}
-              <div className="absolute bottom-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      {/* Floating UI Overlays */}
+      <div className="relative z-20 w-full h-full flex flex-col justify-between items-center px-6 py-12 md:py-16 select-none pointer-events-none">
+        
+        {/* Header - Title */}
+        <header className="w-full text-center pointer-events-auto">
+          <h2 className={cn(
+            "text-2xl md:text-4xl font-semibold tracking-wide bg-gradient-to-r bg-clip-text text-transparent transition-all duration-500",
+            isFlashing ? "from-black to-black animate-none" : "from-teal-400 via-zinc-100 to-purple-400"
+          )}>
+            Harshit Satti
+          </h2>
+          <p className={cn(
+            "text-xs md:text-sm tracking-widest uppercase font-light mt-2 transition-colors duration-500",
+            isFlashing ? "text-zinc-800" : "text-zinc-400"
+          )}>
+            Backend Developer Portfolio
+          </p>
+        </header>
+
+        {/* Bottom Area - Subtitles and Controls */}
+        <div className="w-full max-w-3xl flex flex-col items-center gap-6 pointer-events-auto">
+          
+          {/* Subtitles Overlay */}
+          <div className="w-full bg-black/60 border border-zinc-850 backdrop-blur-md rounded-2xl p-5 md:p-6 shadow-2xl text-center">
+            <p className={cn(
+              "text-sm md:text-lg text-zinc-200 font-light leading-relaxed transition-all duration-500",
+              isFlashing && "text-zinc-900 font-medium"
+            )}>
+              "{captions[captionIndex]}"
+            </p>
+          </div>
+
+          {/* Video control badges */}
+          <div className="flex items-center gap-3">
+            <span className="bg-teal-500/10 border border-teal-500/30 backdrop-blur-sm px-3.5 py-1.5 rounded-full text-xs text-teal-400 font-medium animate-pulse">
+              AI Presenter Playing
+            </span>
+            {!isVideoError && (
+              <div className="flex items-center gap-2">
                 <button 
                   onClick={toggleMute}
-                  className="bg-black/75 hover:bg-zinc-800 text-white p-2 rounded-full border border-zinc-700/50 backdrop-blur-sm transition-all"
+                  className="bg-black/60 hover:bg-zinc-900 text-white p-2 rounded-full border border-zinc-800 backdrop-blur-sm transition-all active:scale-95"
                   title={isMuted ? "Unmute" : "Mute"}
                 >
                   {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                 </button>
                 <button 
                   onClick={restartVideo}
-                  className="bg-black/75 hover:bg-zinc-800 text-white p-2 rounded-full border border-zinc-700/50 backdrop-blur-sm transition-all"
-                  title="Restart"
+                  className="bg-black/60 hover:bg-zinc-900 text-white p-2 rounded-full border border-zinc-800 backdrop-blur-sm transition-all active:scale-95"
+                  title="Restart Video"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </button>
               </div>
-
-              <div className="absolute top-4 left-4 bg-teal-500/10 border border-teal-500/30 backdrop-blur px-3 py-1 rounded-full text-xs text-teal-400 font-medium animate-pulse">
-                AI Presenter Playing
-              </div>
-            </div>
-          )}
-
-          {/* Glowing Ambient Border */}
-          <div className="absolute inset-0 border border-purple-500/20 rounded-2xl pointer-events-none group-hover:border-purple-500/40 transition-colors duration-500" />
-        </div>
-
-        {/* Captions / Speech Subtitles */}
-        <div className="w-full max-w-lg min-h-[72px] bg-zinc-900/50 border border-zinc-800/80 backdrop-blur rounded-xl p-4 text-center">
-          <p className={cn(
-            "text-sm md:text-base text-zinc-300 font-light leading-relaxed transition-all duration-500",
-            isFlashing && "text-zinc-900 font-medium"
-          )}>
-            "{captions[captionIndex]}"
-          </p>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Interactive Light Switch / Pull-string Area */}
-      <div className="flex flex-col items-center justify-center w-full md:w-auto md:min-w-[200px] h-full gap-4 md:border-l md:border-zinc-800 md:pl-12">
-        <div className="text-center md:text-left mb-2 md:mb-6">
-          <p className={cn(
-            "text-xs uppercase tracking-wider font-semibold transition-colors duration-500",
-            isFlashing ? "text-zinc-900" : "text-purple-400"
-          )}>
-            Portfolio Power
-          </p>
-          <h3 className={cn(
-            "text-sm font-light mt-1 transition-colors duration-500",
-            isFlashing ? "text-zinc-700" : "text-zinc-400"
-          )}>
-            Pull string to turn on lights
-          </h3>
-        </div>
-
-        {/* Pull-String interactive widget */}
-        <div className="relative h-[250px] w-[60px] flex justify-center">
-          {/* Ceiling connection base */}
-          <div className={cn(
-            "absolute top-0 w-8 h-2 rounded-b bg-zinc-800 border-zinc-700 transition-colors duration-500",
-            isFlashing && "bg-zinc-400"
-          )} />
-          
-          {/* The String */}
+      {/* Fullscreen Hanging Pull-String Switch (Absolute overlay on the right side) */}
+      <div className="absolute right-6 md:right-16 top-0 bottom-0 z-30 flex flex-col items-center justify-start py-8 pointer-events-none">
+        
+        {/* String connection base */}
+        <div className={cn(
+          "w-8 h-2 rounded-b bg-zinc-800 border-zinc-700 transition-colors duration-500 pointer-events-auto",
+          isFlashing && "bg-zinc-400"
+        )} />
+        
+        {/* Pull String widget */}
+        <div className="relative h-[280px] w-[60px] flex justify-center pointer-events-auto">
+          {/* String */}
           <div 
             className={cn(
-              "absolute top-1 w-[2px] bg-zinc-600 transition-all duration-300 origin-top shadow-md cursor-pointer",
-              isSwitchedOn ? "h-[190px]" : "h-[160px] hover:h-[170px]",
+              "absolute top-0 w-[2px] bg-zinc-500 transition-all duration-300 origin-top shadow-md cursor-pointer",
+              isSwitchedOn ? "h-[220px]" : "h-[180px] hover:h-[195px]",
               isFlashing ? "bg-zinc-400" : "bg-gradient-to-b from-zinc-700 to-zinc-400"
             )}
             onClick={handlePullSwitch}
           />
           
-          {/* The Knob / Pull Handle */}
+          {/* Knob / Pull Handle */}
           <div 
             onClick={handlePullSwitch}
             className={cn(
-              "absolute w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 select-none shadow-lg border",
+              "absolute w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 select-none shadow-lg border z-10",
               isSwitchedOn 
-                ? "top-[185px] bg-teal-500 border-teal-400 shadow-teal-500/50 scale-95" 
-                : "top-[155px] hover:top-[165px] bg-zinc-800 hover:bg-zinc-700 border-zinc-700 hover:border-zinc-600 shadow-black/80 hover:scale-105",
+                ? "top-[215px] bg-teal-500 border-teal-400 shadow-teal-500/50 scale-95" 
+                : "top-[175px] hover:top-[190px] bg-zinc-800 hover:bg-zinc-700 border-zinc-700 hover:border-zinc-650 shadow-black/80 hover:scale-105",
               isFlashing && "bg-zinc-200 border-zinc-300 shadow-none text-zinc-950"
             )}
           >
             <Power 
               className={cn(
-                "w-5 h-5 transition-colors duration-300",
+                "w-4 h-4 transition-colors duration-300",
                 isSwitchedOn 
                   ? "text-zinc-950 animate-pulse" 
                   : "text-zinc-400 group-hover:text-zinc-200",
@@ -254,26 +250,20 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
             />
           </div>
 
-          {/* Glow Behind String/Knob */}
+          {/* Glow Behind Handle */}
           {!isSwitchedOn && (
-            <div className="absolute top-[150px] w-24 h-24 rounded-full bg-teal-500/5 blur-xl pointer-events-none animate-pulse" />
+            <div className="absolute top-[170px] w-20 h-20 rounded-full bg-teal-500/10 blur-xl pointer-events-none animate-pulse" />
           )}
         </div>
 
-        {/* Action button */}
-        <button
-          onClick={handlePullSwitch}
-          disabled={isSwitchedOn || isFading}
-          className={cn(
-            "mt-4 px-6 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 border",
-            isSwitchedOn 
-              ? "bg-teal-500/20 border-teal-500/30 text-teal-400 cursor-not-allowed" 
-              : "bg-zinc-900 hover:bg-zinc-800 border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white cursor-pointer active:scale-95",
-            isFlashing && "bg-zinc-200 border-zinc-300 text-zinc-950 font-bold"
-          )}
-        >
-          {isSwitchedOn ? "Powering Up..." : "Turn On Lights"}
-        </button>
+        {/* Floating Label pointing to switch (shows only if switch not pulled) */}
+        {!isSwitchedOn && (
+          <div className={cn(
+            "mt-4 bg-black/75 border border-zinc-800 backdrop-blur-sm px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest text-zinc-400 text-center animate-bounce shadow-md"
+          )}>
+            Pull to start
+          </div>
+        )}
       </div>
     </div>
   );
