@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollReveal } from '../ScrollReveal';
 import { TiltCard } from '../TiltCard';
-import { Folder, ChevronRight, X, Server, Database, Code, Briefcase, GraduationCap } from 'lucide-react';
+import { Folder, ChevronRight, X, Server, Database, Code, Briefcase, GraduationCap, ExternalLink } from 'lucide-react';
 
 const projects = [
   {
@@ -12,6 +12,7 @@ const projects = [
     tech: ['Spring Boot', 'React', 'MySQL', 'REST API'],
     focus: 'Role-based authentication & authorization, recommendation system, schema design',
     icon: Briefcase,
+    liveUrl: 'https://smart-job-portal-web.onrender.com',
   },
   {
     title: 'AI-Powered Secure Online Examination System',
@@ -20,6 +21,7 @@ const projects = [
     tech: ['Java', 'Servlets', 'JSP', 'JDBC', 'MySQL'],
     focus: 'Role-based authorization, proctoring algorithms, schema design',
     icon: GraduationCap,
+    liveUrl: 'https://ai-secure-exam-system.onrender.com/',
   },
   {
     title: 'Monthly Utility Bill Tracker',
@@ -112,45 +114,75 @@ export const Projects = () => {
                 <TiltCard className="h-full">
                   <button
                     onClick={() => setSelectedProject(project)}
-                    className="h-full w-full text-left p-8 rounded-2xl bg-gradient-to-b from-card to-card/50 border border-border shadow-lg hover:shadow-primary/5 hover:border-primary/40 group relative overflow-hidden transition-all duration-300"
+                    className="h-full w-full text-left p-8 rounded-2xl bg-gradient-to-b from-card to-card/50 border border-border shadow-lg hover:shadow-primary/5 hover:border-primary/40 group relative overflow-hidden transition-all duration-300 flex flex-col justify-between"
                   >
                     {/* Background subtle glowing blob */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-500" />
                     
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                          <project.icon className="w-6 h-6 text-primary" />
+                    <div>
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <project.icon className="w-6 h-6 text-primary" />
+                          </div>
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 tracking-wider uppercase">
+                            Major Project
+                          </span>
                         </div>
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 tracking-wider uppercase">
-                          Major Project
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {project.liveUrl && (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-all shadow-sm hover:scale-105 z-10"
+                              title="Open Live Demo"
+                            >
+                              <span>Live Site</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          )}
+                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                        </div>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+
+                      <h3 className="font-heading font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors">
+                        {project.title}
+                      </h3>
+                      
+                      <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
+                        {project.description}
+                      </p>
+
+                      <div className="mb-6 p-4 rounded-xl bg-secondary/40 border border-border/50">
+                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Key Focus</span>
+                        <p className="text-sm text-foreground/90 font-medium">{project.focus}</p>
+                      </div>
                     </div>
 
-                    <h3 className="font-heading font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors">
-                      {project.title}
-                    </h3>
-                    
-                    <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    <div className="mb-6 p-4 rounded-xl bg-secondary/40 border border-border/50">
-                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Key Focus</span>
-                      <p className="text-sm text-foreground/90 font-medium">{project.focus}</p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mt-auto">
-                      {project.tech.map((t) => (
-                        <span
-                          key={t}
-                          className="px-3 py-1 rounded-full text-xs font-medium bg-primary/5 text-primary border border-primary/10"
+                    <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-border/40">
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="px-3 py-1 rounded-full text-xs font-medium bg-primary/5 text-primary border border-primary/10"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                         >
-                          {t}
-                        </span>
-                      ))}
+                          Live Link <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
                     </div>
                   </button>
                 </TiltCard>
@@ -246,7 +278,7 @@ export const Projects = () => {
                 <p className="text-sm text-primary">{selectedProject.focus}</p>
               </div>
 
-              <div>
+              <div className="mb-4">
                 <h4 className="text-sm font-medium text-foreground mb-2">Tech Stack</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedProject.tech.map((t) => (
@@ -259,6 +291,20 @@ export const Projects = () => {
                   ))}
                 </div>
               </div>
+
+              {selectedProject.liveUrl && (
+                <div className="mt-6 pt-4 border-t border-border flex justify-end">
+                  <a
+                    href={selectedProject.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all shadow-md hover:shadow-primary/25"
+                  >
+                    <span>Visit Live Website</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -266,3 +312,4 @@ export const Projects = () => {
     </section>
   );
 };
+
