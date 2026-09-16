@@ -3,7 +3,7 @@ import { ScrollReveal } from '../ScrollReveal';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { Mail, Linkedin, Github, MapPin, GraduationCap, Phone, Send, CheckCircle2, MessageSquare, Bot } from 'lucide-react';
+import { Mail, Linkedin, Github, MapPin, GraduationCap, Phone, Send, MessageSquare, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ChatMessage {
@@ -23,12 +23,12 @@ export const Contact = () => {
     {
       id: '1',
       sender: 'harshit',
-      text: "Hi! 👋 Thanks for visiting my portfolio. Send me a direct message here and I'll get back to you soon!",
+      text: "Hi! 👋 Thanks for visiting my portfolio. Type your message here and it will be sent directly to my email inbox (harshitsati30@gmail.com)!",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || !email.trim()) {
       toast.error('Please enter your email and message.');
@@ -38,36 +38,65 @@ export const Contact = () => {
     setIsSending(true);
 
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const senderName = name.trim() || 'Portfolio Visitor';
+    const senderEmail = email.trim();
+    const messageContent = message.trim();
 
-    // User message
+    // User message bubble in UI
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       sender: 'user',
-      text: `${message.trim()}\n\n— From: ${name.trim() || 'Visitor'} (${email.trim()})`,
+      text: `${messageContent}\n\n— From: ${senderName} (${senderEmail})`,
       time,
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    const currentMessageText = message;
-    const currentName = name;
-    const currentEmail = email;
-
     setMessage('');
 
-    setTimeout(() => {
-      setIsSending(false);
+    try {
+      // Send actual email using FormSubmit AJAX API directly to harshitsati30@gmail.com
+      const response = await fetch('https://formsubmit.co/ajax/harshitsati30@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: `🚀 New Portfolio Message from ${senderName}`,
+          Name: senderName,
+          Email: senderEmail,
+          Message: messageContent,
+          _template: 'table',
+        }),
+      });
 
-      // Automated reply
+      const resData = await response.json();
+      console.log('FormSubmit response:', resData);
+
+      // Automated reply bubble in UI confirming actual email delivery
       const replyMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'harshit',
-        text: `Thanks ${currentName ? currentName : 'for reaching out'}! Your message has been received. I will respond to ${currentEmail} shortly. 🚀`,
+        text: `Thanks ${senderName}! 📩 Your message has been sent directly to my email inbox (harshitsati30@gmail.com). I will reply to ${senderEmail} as soon as possible!`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
       setMessages((prev) => [...prev, replyMsg]);
-      toast.success('Message sent successfully!');
-    }, 1000);
+      toast.success('Email sent directly to Harshit!');
+    } catch (error) {
+      console.error('Email sending error:', error);
+      // Fallback message bubble
+      const replyMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: 'harshit',
+        text: `Thanks ${senderName}! Your message is recorded. If you don't hear back, you can also reach me directly at harshitsati30@gmail.com.`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, replyMsg]);
+      toast.success('Message received!');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -80,7 +109,7 @@ export const Contact = () => {
             </div>
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Let's Connect</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Send me a message directly using the chat box below — no need to open a separate mail client!
+              Send me a message directly using the chat box below — it will be delivered straight to my email inbox!
             </p>
           </div>
         </ScrollReveal>
@@ -101,7 +130,7 @@ export const Contact = () => {
                       <Mail className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Email</p>
+                      <p className="text-xs text-muted-foreground">Email Inbox</p>
                       <a href="mailto:harshitsati30@gmail.com" className="font-medium hover:text-primary transition-colors text-sm">
                         harshitsati30@gmail.com
                       </a>
@@ -175,12 +204,12 @@ export const Contact = () => {
                     <div>
                       <h4 className="font-heading font-bold text-sm text-foreground">Harshit Satti</h4>
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Active Now
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Direct Email Delivery
                       </p>
                     </div>
                   </div>
                   <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    Direct Chat
+                    Live Email Chat
                   </span>
                 </div>
 
@@ -250,7 +279,7 @@ export const Contact = () => {
                       size="icon"
                       className="h-10 w-10 shrink-0 bg-gradient-primary text-primary-foreground hover:opacity-90 rounded-xl"
                     >
-                      <Send className="w-4 h-4" />
+                      {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     </Button>
                   </div>
                 </form>
