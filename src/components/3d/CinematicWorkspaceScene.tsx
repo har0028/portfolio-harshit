@@ -4,6 +4,7 @@ import { Html, Float, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { InteractiveObject } from './InteractiveObject';
 import { toast } from 'sonner';
+import gsap from 'gsap';
 
 interface CinematicWorkspaceSceneProps {
   onSelectObject: (target: string) => void;
@@ -17,6 +18,23 @@ export const CinematicWorkspaceScene: React.FC<CinematicWorkspaceSceneProps> = (
   const groupRef = useRef<THREE.Group>(null);
   const [coffeeCount, setCoffeeCount] = useState(0);
   const [currentTime, setCurrentTime] = useState('21:06');
+  const scrollProgressRef = useRef(0);
+
+  // Track window scroll progress smoothly
+  useEffect(() => {
+    const handleScroll = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll > 0) {
+        const rawProgress = window.scrollY / maxScroll;
+        // Clamp progress between 0 and 1
+        scrollProgressRef.current = Math.min(Math.max(rawProgress, 0), 1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const updateClock = () => {
@@ -30,13 +48,40 @@ export const CinematicWorkspaceScene: React.FC<CinematicWorkspaceSceneProps> = (
     return () => clearInterval(interval);
   }, []);
 
-  // Subtle camera parallax tracking
-  useFrame((state) => {
+  // Smooth R3F frame interpolation binding 3D model transforms to actual page scroll
+  useFrame((state, delta) => {
     if (groupRef.current) {
-      const mouseX = state.pointer.x * 0.15;
-      const mouseY = state.pointer.y * 0.1;
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, mouseX, 0.04);
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -mouseY, 0.04);
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const progress = scrollProgressRef.current;
+
+      // Mouse Parallax Offsets
+      const mouseX = prefersReducedMotion ? 0 : state.pointer.x * 0.12;
+      const mouseY = prefersReducedMotion ? 0 : state.pointer.y * 0.08;
+
+      // Calculate Scroll-driven 3D Transformations
+      // 1. Rotation: At top = 0. As user scrolls down, model rotates smoothly up to ~0.5 rad Y and 0.18 rad X
+      const targetRotY = prefersReducedMotion ? mouseX : mouseX + Math.sin(progress * Math.PI) * 0.45;
+      const targetRotX = prefersReducedMotion ? -mouseY : -mouseY + progress * 0.18;
+
+      // 2. Position: Shift horizontally and vertically as user scrolls
+      const targetPosX = 0.2 - progress * 0.5;
+      const targetPosY = -0.65 + Math.sin(progress * Math.PI * 1.5) * 0.15;
+      const targetPosZ = -progress * 0.3;
+
+      // 3. Scale: Subtle scale change on scroll
+      const targetScale = 1 - progress * 0.12;
+
+      // Apply smooth lerping/damping for cinematic scrub effect without jerky motion
+      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, delta * 4);
+      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, delta * 4);
+
+      groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetPosX, delta * 4);
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetPosY, delta * 4);
+      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetPosZ, delta * 4);
+
+      groupRef.current.scale.setScalar(
+        THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, delta * 4)
+      );
     }
   });
 
