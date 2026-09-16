@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
-import { WorkspaceScene } from './WorkspaceScene';
+import { CinematicWorkspaceScene } from './CinematicWorkspaceScene';
+import { MilkyWayBackground } from './MilkyWayBackground';
 import { WebGLFallback } from './WebGLFallback';
 
 interface Workspace3DProps {
@@ -29,41 +30,48 @@ export const Workspace3D: React.FC<Workspace3DProps> = ({ onSelectObject, onUser
   }
 
   return (
-    <div className="w-full h-[500px] sm:h-[600px] md:h-[650px] relative rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing">
+    <div className="w-full h-[550px] sm:h-[650px] md:h-[720px] relative rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border border-sky-500/20 shadow-2xl bg-[#060813]">
       <Canvas
         shadows
         dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         className="w-full h-full"
       >
-        <PerspectiveCamera makeDefault position={[0, 2.2, 5.2]} fov={50} />
+        <PerspectiveCamera makeDefault position={[0, 2.1, 5.2]} fov={48} />
         <OrbitControls
           enableZoom={false}
           enablePan={false}
-          maxPolarAngle={Math.PI / 2.1}
-          minPolarAngle={Math.PI / 4}
-          maxAzimuthAngle={Math.PI / 4}
-          minAzimuthAngle={-Math.PI / 4}
-          rotateSpeed={0.5}
+          maxPolarAngle={Math.PI / 2.05}
+          minPolarAngle={Math.PI / 4.5}
+          maxAzimuthAngle={Math.PI / 3.5}
+          minAzimuthAngle={-Math.PI / 3.5}
+          rotateSpeed={0.4}
         />
 
-        {/* Cinematic Lighting System */}
-        <ambientLight intensity={0.6} />
-        {/* Key Light */}
+        {/* Realistic Milky Way & Space Environment */}
+        <MilkyWayBackground />
+
+        {/* Balanced Dual Lighting Scheme: Warm Amber + Cool Space Blue */}
+        <ambientLight intensity={0.4} />
+
+        {/* Warm Desk Amber Key Light (Left) */}
         <directionalLight
-          position={[5, 8, 5]}
-          intensity={1.5}
+          position={[-4, 6, 4]}
+          intensity={1.8}
+          color="#fbbf24"
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
         />
-        {/* Fill Light */}
-        <directionalLight position={[-5, 4, 3]} intensity={0.8} color="#818cf8" />
-        {/* Rim Light */}
-        <pointLight position={[0, 4, -4]} intensity={2} color="#6366f1" />
 
-        {/* Workspace 3D Scene */}
-        <WorkspaceScene onSelectObject={onSelectObject} onUserInteract={onUserInteract} />
+        {/* Cool Blue Space Light (Right) */}
+        <directionalLight position={[6, 4, 3]} intensity={1.2} color="#38bdf8" />
+
+        {/* Soft Blue Rim Light */}
+        <pointLight position={[0, 4, -4]} intensity={2.2} color="#0284c7" />
+
+        {/* Cinematic Workspace 3D Scene */}
+        <CinematicWorkspaceScene onSelectObject={onSelectObject} onUserInteract={onUserInteract} />
       </Canvas>
     </div>
   );
