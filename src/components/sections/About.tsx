@@ -1,5 +1,5 @@
 import { ScrollReveal } from '../ScrollReveal';
-import { User, Target, Rocket } from 'lucide-react';
+import { User, Target, Rocket, GraduationCap } from 'lucide-react';
 
 export const About = () => {
   return (
@@ -18,18 +18,15 @@ export const About = () => {
           <ScrollReveal delay={0.1}>
             <div className="space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                I'm <span className="text-foreground font-medium">Harshit Satti</span>, a backend-focused Java developer 
-                currently pursuing B.Tech in Computer Science at COER University (2023–2027).
+                I'm <span className="text-foreground font-medium">Harshit Satti</span>, a Java backend developer 
+                pursuing B.Tech in Computer Science & Engineering at <span className="text-foreground font-medium">COER University</span> (2023–2027) in Roorkee, Uttarakhand with a CGPA of 7.00.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                My passion lies in building <span className="text-foreground">scalable backend systems</span> using 
-                Java, Spring Boot, REST APIs, JPA, and MySQL. I believe in clean code, logical structure, 
-                and creating real-world impact rather than flashy claims.
+                I have hands-on internship and project experience building full-stack web applications using{' '}
+                <span className="text-foreground font-medium">Java, Spring Boot, Spring MVC, JDBC, Hibernate, and REST APIs</span>, backed by optimized MySQL database schemas applying normalization and indexing principles.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                With <span className="text-primary font-medium">250+ DSA problems solved</span> and multiple 
-                backend-driven applications under my belt, I'm actively seeking Backend Developer / 
-                Software Engineer roles where I can contribute to robust system architectures.
+                With <span className="text-primary font-medium">250+ DSA problems solved</span> on LeetCode and GeeksforGeeks, a strong foundation in OOP and MVC architecture, and AI-assisted development workflow, I'm eager to contribute as a Java Developer.
               </p>
             </div>
           </ScrollReveal>
@@ -39,12 +36,25 @@ export const About = () => {
               <div className="p-6 rounded-xl bg-card border border-border shadow-card">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-semibold text-lg mb-1">Education</h3>
+                    <p className="text-foreground font-medium">COER University</p>
+                    <p className="text-sm text-muted-foreground">B.Tech in CS & Engineering | CGPA: 7.00 | 2023 – 2027</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-xl bg-card border border-border shadow-card">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <Target className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-semibold text-lg mb-2">My Focus</h3>
+                    <h3 className="font-heading font-semibold text-lg mb-1">My Focus</h3>
                     <p className="text-muted-foreground">
-                      Backend development, system design, and building APIs that power real applications.
+                      Java backend development, RESTful APIs, database schema optimization, and role-based authentication systems.
                     </p>
                   </div>
                 </div>
@@ -56,9 +66,9 @@ export const About = () => {
                     <Rocket className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-semibold text-lg mb-2">My Goal</h3>
+                    <h3 className="font-heading font-semibold text-lg mb-1">My Goal</h3>
                     <p className="text-muted-foreground">
-                      Becoming a strong backend engineer who builds robust, maintainable systems at scale.
+                      Eager to contribute as a Java Developer to build scalable, high-performance backend systems.
                     </p>
                   </div>
                 </div>

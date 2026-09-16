@@ -44,16 +44,17 @@ export const Hero = () => {
           </motion.div>
 
           {/* Name with typing animation */}
-<h1 className="
-  text-4xl
-  leading-tight
-  sm:text-5xl
-  md:text-6xl
-  lg:text-7xl
-  font-heading
-  font-bold
-  text-balance
-">            <TypeWriter
+          <h1 className="
+            text-4xl
+            leading-tight
+            sm:text-5xl
+            md:text-6xl
+            lg:text-7xl
+            font-heading
+            font-bold
+            text-balance
+          ">
+            <TypeWriter
               text="Hi, I'm Harshit Satti"
               delay={120}
               onComplete={() => {
@@ -80,30 +81,22 @@ export const Hero = () => {
             animate={showContent ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
- <p className="max-w-[90%] mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
-  <span className="block">
-    Backend engineer specializing in
-    <span className="text-foreground font-semibold">
-      {' '}Java
-    </span>{' '}
-    and
-    <span className="text-foreground font-semibold">
-      {' '}Spring Boot
-    </span>.
-  </span>
-
-  <span className="block mt-2 text-foreground/80">
-    I build
-    <span className="text-foreground font-medium">
-      {' '}scalable, production-ready systems
-    </span>
-    {' '}with clean architecture.
-  </span>
-</p>
-
-
-
-
+            <p className="max-w-[90%] mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
+              <span className="block">
+                Backend engineer specializing in
+                <span className="text-foreground font-semibold"> Java</span>,
+                <span className="text-foreground font-semibold"> Spring Boot</span>,
+                <span className="text-foreground font-semibold"> REST APIs</span>, and
+                <span className="text-foreground font-semibold"> MySQL</span>.
+              </span>
+              <span className="block mt-2 text-foreground/80">
+                Building
+                <span className="text-foreground font-medium">
+                  {' '}scalable backend services, role-based authentication, and full-stack systems
+                </span>
+                {' '}with clean architecture.
+              </span>
+            </p>
           </motion.div>
 
           {/* CTAs */}
@@ -166,21 +159,20 @@ export const Hero = () => {
           </motion.div>
         </motion.div>
 
-      {/* Scroll Indicator */}
-<motion.div
-  initial={{ opacity: 0 }}
-  animate={showContent ? { opacity: 1 } : {}}
-  transition={{ delay: 0.8 }}
-  className="flex justify-center pt-10"
->
-  <motion.div
-    animate={{ y: [0, 8, 0] }}
-    transition={{ duration: 2, repeat: Infinity }}
-  >
-    <ArrowDown className="w-6 h-6 text-muted-foreground" />
-  </motion.div>
-</motion.div>
-
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={showContent ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8 }}
+          className="flex justify-center pt-10"
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <ArrowDown className="w-6 h-6 text-muted-foreground" />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

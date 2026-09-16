@@ -16,9 +16,15 @@ const skillCategories = [
     color: 'from-blue-500/20 to-indigo-500/20',
   },
   {
+    title: 'API Development',
+    icon: Network,
+    skills: ['REST APIs', 'RESTful Web Services', 'Postman'],
+    color: 'from-cyan-500/20 to-blue-500/20',
+  },
+  {
     title: 'Database',
     icon: Database,
-    skills: ['MySQL', 'Schema Design', 'SQL Queries', 'JDBC'],
+    skills: ['MySQL', 'JDBC', 'Schema Design', 'Normalization', 'Indexing Principles'],
     color: 'from-emerald-500/20 to-teal-500/20',
   },
   {
@@ -34,16 +40,10 @@ const skillCategories = [
     color: 'from-purple-500/20 to-pink-500/20',
   },
   {
-    title: 'Tools',
+    title: 'Tools & Platforms',
     icon: Wrench,
     skills: ['Git', 'GitHub', 'IntelliJ IDEA', 'VS Code', 'Eclipse', 'Postman'],
     color: 'from-orange-500/20 to-amber-500/20',
-  },
-  {
-    title: 'API Development',
-    icon: Network,
-    skills: ['REST APIs', 'RESTful Web Services', 'Postman'],
-    color: 'from-cyan-500/20 to-blue-500/20',
   },
 ];
 
@@ -53,9 +53,9 @@ export const Skills = () => {
       <div className="container px-6">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Skills & Technologies</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Technical Skills</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              My technical toolkit focused on backend development and system design
+              My technical toolkit focused on Java backend engineering, RESTful APIs, and database architecture
             </p>
           </div>
         </ScrollReveal>

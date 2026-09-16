@@ -1,6 +1,6 @@
 import { ScrollReveal } from '../ScrollReveal';
 import { Button } from '../ui/button';
-import { Mail, Linkedin, Github, MapPin, GraduationCap } from 'lucide-react';
+import { Mail, Linkedin, Github, MapPin, GraduationCap, Phone } from 'lucide-react';
 
 export const Contact = () => {
   return (
@@ -13,11 +13,11 @@ export const Contact = () => {
             </div>
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Let's Connect</h2>
             <p className="text-muted-foreground text-lg mb-8">
-              I'm actively looking for Backend Developer / Software Engineer opportunities.
-              Let's discuss how I can contribute to your team.
+              I'm actively looking for Java Backend Developer / Software Engineer opportunities.
+              Feel free to reach out for roles or collaborations!
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mb-12">
               <Button 
                 size="lg" 
                 className="w-full sm:w-auto bg-gradient-primary hover:opacity-90 text-primary-foreground px-8 py-6 text-base font-medium"
@@ -25,7 +25,18 @@ export const Contact = () => {
               >
                 <a href="mailto:harshitsati30@gmail.com">
                   <Mail className="mr-2 w-5 h-5" />
-                  Send Email
+                  harshitsati30@gmail.com
+                </a>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="w-full sm:w-auto border-border hover:bg-secondary/50 px-8 py-6 text-base"
+                asChild
+              >
+                <a href="tel:+918755776798">
+                  <Phone className="mr-2 w-5 h-5 text-primary" />
+                  +91 8755776798
                 </a>
               </Button>
               <Button 
@@ -55,11 +66,11 @@ export const Contact = () => {
             <div className="flex flex-wrap items-center justify-center gap-6 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-primary" />
-                <span>B.Tech CSE, COER University</span>
+                <span>B.Tech CSE, COER University (CGPA: 7.00)</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" />
-                <span>India</span>
+                <span>Roorkee, Uttarakhand, India</span>
               </div>
             </div>
           </div>
