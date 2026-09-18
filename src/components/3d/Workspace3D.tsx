@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
+import { PerspectiveCamera, Environment } from '@react-three/drei';
+import * as THREE from 'three';
 import { CinematicWorkspaceScene } from './CinematicWorkspaceScene';
 import { MilkyWayBackground } from './MilkyWayBackground';
 import { WebGLFallback } from './WebGLFallback';
@@ -12,17 +13,19 @@ interface Workspace3DProps {
 
 export const Workspace3D: React.FC<Workspace3DProps> = ({ onSelectObject, onUserInteract }) => {
   const [hasWebGL, setHasWebGL] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      if (!gl) {
-        setHasWebGL(false);
-      }
-    } catch (e) {
+    // Lightweight WebGL check without allocating and destroying a heavy throwaway WebGL context
+    if (typeof window !== 'undefined' && !window.WebGLRenderingContext) {
       setHasWebGL(false);
+      return;
     }
+    // Defer 3D Canvas initialization by one animation frame so HTML/CSS DOM paints instantly
+    const handle = requestAnimationFrame(() => {
+      setIsReady(true);
+    });
+    return () => cancelAnimationFrame(handle);
   }, []);
 
   if (!hasWebGL) {
@@ -30,49 +33,64 @@ export const Workspace3D: React.FC<Workspace3DProps> = ({ onSelectObject, onUser
   }
 
   return (
-    <div className="w-full h-[550px] sm:h-[650px] md:h-[720px] relative rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border border-sky-500/20 shadow-2xl bg-[#060813]">
-      <Canvas
-        shadows
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        className="w-full h-full"
-      >
-        <PerspectiveCamera makeDefault position={[0, 2.1, 5.2]} fov={48} />
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          maxPolarAngle={Math.PI / 2.05}
-          minPolarAngle={Math.PI / 4.5}
-          maxAzimuthAngle={Math.PI / 3.5}
-          minAzimuthAngle={-Math.PI / 3.5}
-          rotateSpeed={0.4}
-        />
+    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-[#050713] pointer-events-none">
+      {isReady && (
+        <Canvas
+          dpr={[1, 1.5]}
+          eventSource={typeof document !== 'undefined' ? document.body : undefined}
+          gl={{
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance',
+            stencil: false,
+            depth: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.1,
+          }}
+          className="w-full h-full"
+        >
+          <PerspectiveCamera makeDefault position={[0, 0, 7]} fov={40} />
 
-        {/* Realistic Milky Way & Space Environment */}
-        <MilkyWayBackground />
+          {/* Deep Space Background */}
+          <MilkyWayBackground />
 
-        {/* Balanced Dual Lighting Scheme: Warm Amber + Cool Space Blue */}
-        <ambientLight intensity={0.4} />
+          {/* ───────────────────────────────────────────────────────────── */}
+          {/* CINEMATIC LIGHTING — tuned for multi-metallic spacecraft */}
+          {/* ───────────────────────────────────────────────────────────── */}
 
-        {/* Warm Desk Amber Key Light (Left) */}
-        <directionalLight
-          position={[-4, 6, 4]}
-          intensity={1.8}
-          color="#fbbf24"
-          castShadow
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
-        />
+          {/* Soft cool blue ambient starlight fill */}
+          <ambientLight intensity={0.30} color="#0f172a" />
 
-        {/* Cool Blue Space Light (Right) */}
-        <directionalLight position={[6, 4, 3]} intensity={1.2} color="#38bdf8" />
+          {/* 1. Primary Key Light — crisp stellar radiance from upper-left */}
+          <directionalLight
+            position={[-5, 7, 6]}
+            intensity={4.2}
+            color="#f8fafc"
+          />
 
-        {/* Soft Blue Rim Light */}
-        <pointLight position={[0, 4, -4]} intensity={2.2} color="#0284c7" />
+          {/* 2. Secondary Fill — distant starlight fill from opposite side */}
+          <directionalLight
+            position={[6, 4, 4]}
+            intensity={1.6}
+            color="#94a3b8"
+          />
 
-        {/* Cinematic Workspace 3D Scene */}
-        <CinematicWorkspaceScene onSelectObject={onSelectObject} onUserInteract={onUserInteract} />
-      </Canvas>
+          {/* 3. Cool Blue/Cyan Rim Light — backlighting defines silhouette edges */}
+          <pointLight position={[5, 5, -5]} intensity={4.6} color="#38bdf8" />
+
+          {/* 4. Subtle Cyan Reflected Underside — cosmic nebula bounce light */}
+          <directionalLight position={[3, -4, 3]} intensity={1.4} color="#0284c7" />
+
+          {/* 5. Distant Amber Star Accent — complementary warmth */}
+          <pointLight position={[-4, -2, -4]} intensity={1.6} color="#f59e0b" />
+
+          <Suspense fallback={null}>
+            {/* Environment map inside Suspense so starfield and scene render immediately */}
+            <Environment preset="city" environmentIntensity={1.6} />
+            <CinematicWorkspaceScene onSelectObject={onSelectObject} onUserInteract={onUserInteract} />
+          </Suspense>
+        </Canvas>
+      )}
     </div>
   );
 };

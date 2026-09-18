@@ -8,6 +8,7 @@ import { Projects3D } from '@/components/sections/Projects3D';
 import { Achievements } from '@/components/sections/Achievements';
 import { Contact } from '@/components/sections/Contact';
 import { AskHarshitAI } from '@/components/AskHarshitAI/AskHarshitAI';
+import { Workspace3D } from '@/components/3d/Workspace3D';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -17,7 +18,6 @@ const Index = () => {
     const secret = 'harshit';
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore when user is typing in input or textarea
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
 
       inputSequence += e.key.toLowerCase();
@@ -45,9 +45,12 @@ const Index = () => {
   };
 
   return (
-    <div className="relative noise-overlay">
+    <div className="relative min-h-screen bg-transparent noise-overlay text-foreground">
+      {/* Global Persistent 3D Universe Canvas spanning the entire website */}
+      <Workspace3D onSelectObject={handleNavigateSection} />
+
       <Navigation onNavigateSection={handleNavigateSection} />
-      <main>
+      <main className="relative z-10">
         <Hero onNavigateSection={handleNavigateSection} />
         <About />
         <Experience />

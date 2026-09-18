@@ -71,7 +71,7 @@ export const Experience = () => {
                 <div className={`w-full md:w-[calc(50%-2.5rem)] pl-16 md:pl-0 ${
                   index % 2 === 0 ? 'md:mr-auto md:text-right' : 'md:ml-auto md:text-left'
                 }`}>
-                  <div className="p-6 rounded-2xl bg-card border border-border shadow-card hover:border-primary/40 transition-all duration-300">
+                  <div className="p-6 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-800/90 shadow-2xl hover:border-primary/40 transition-all duration-300">
                     <div className={`flex flex-wrap items-center gap-2 mb-3 ${
                       index % 2 === 0 ? 'md:justify-end' : 'md:justify-start'
                     }`}>

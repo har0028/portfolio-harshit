@@ -100,7 +100,7 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-32 relative">
+    <section id="contact" className="pt-20 md:pt-28 pb-8 md:pb-10 relative">
       <div className="container px-6">
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -118,7 +118,7 @@ export const Contact = () => {
           {/* Left Column: Direct Info & Socials */}
           <div className="lg:col-span-5 space-y-6">
             <ScrollReveal delay={0.1}>
-              <div className="p-8 rounded-2xl bg-card border border-border shadow-card space-y-6">
+              <div className="p-8 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-800/90 shadow-2xl space-y-6">
                 <h3 className="font-heading font-bold text-2xl text-foreground">Contact Information</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   I'm actively seeking Java Backend Developer & Software Engineer opportunities. Let's discuss how I can contribute to your team!
@@ -191,9 +191,9 @@ export const Contact = () => {
           {/* Right Column: Direct Chat Box Component */}
           <div className="lg:col-span-7">
             <ScrollReveal delay={0.2}>
-              <div className="rounded-2xl bg-card border border-border shadow-xl overflow-hidden flex flex-col h-[520px]">
+              <div className="rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-800/90 shadow-2xl overflow-hidden flex flex-col h-[520px]">
                 {/* Chat Header */}
-                <div className="p-4 bg-secondary/40 border-b border-border flex items-center justify-between">
+                <div className="p-4 bg-slate-900/90 border-b border-slate-800/80 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm shadow-md">
@@ -214,7 +214,7 @@ export const Contact = () => {
                 </div>
 
                 {/* Chat Messages Log */}
-                <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-background/50">
+                <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-950/60">
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
@@ -224,7 +224,7 @@ export const Contact = () => {
                         className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed ${
                           msg.sender === 'user'
                             ? 'bg-primary text-primary-foreground rounded-tr-none'
-                            : 'bg-secondary/70 text-foreground border border-border/60 rounded-tl-none'
+                            : 'bg-slate-900/90 text-foreground border border-slate-800/80 rounded-tl-none'
                         }`}
                       >
                         <p className="whitespace-pre-line">{msg.text}</p>
@@ -241,13 +241,13 @@ export const Contact = () => {
                 </div>
 
                 {/* Chat Input Form */}
-                <form onSubmit={handleSendMessage} className="p-4 bg-card border-t border-border space-y-3">
+                <form onSubmit={handleSendMessage} className="p-4 bg-slate-950/90 border-t border-slate-800/80 space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <Input
                       placeholder="Your Name (Optional)"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="bg-background/60 text-xs h-9"
+                      className="bg-slate-900/90 border-slate-800/80 text-xs h-9"
                     />
                     <Input
                       type="email"
@@ -255,7 +255,7 @@ export const Contact = () => {
                       placeholder="Your Email *"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="bg-background/60 text-xs h-9"
+                      className="bg-slate-900/90 border-slate-800/80 text-xs h-9"
                     />
                   </div>
                   <div className="flex items-center gap-2">
@@ -271,7 +271,7 @@ export const Contact = () => {
                           handleSendMessage(e);
                         }
                       }}
-                      className="bg-background/60 text-xs min-h-[40px] max-h-[80px] resize-none py-2.5"
+                      className="bg-slate-900/90 border-slate-800/80 text-xs min-h-[40px] max-h-[80px] resize-none py-2.5"
                     />
                     <Button
                       type="submit"
@@ -290,7 +290,7 @@ export const Contact = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-24 pt-8 border-t border-border">
+      <div className="mt-16 pt-6 border-t border-slate-800/80">
         <div className="container px-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>Designed & Developed by Harshit Satti

@@ -21,11 +21,20 @@ export const Navigation = ({ onNavigateSection }: NavigationProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 50;
+          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -45,10 +54,12 @@ export const Navigation = ({ onNavigateSection }: NavigationProps) => {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'glass border-b border-border' : ''
+          isScrolled
+            ? 'bg-[#04060c]/95 backdrop-blur-xl border-b border-slate-800/90 shadow-2xl py-3'
+            : 'bg-[#060812]/92 backdrop-blur-md border-b border-slate-800/80 shadow-lg py-4'
         }`}
       >
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-6 flex items-center justify-between">
           <a href="#" className="font-heading text-xl font-semibold text-foreground">
             HS<span className="text-primary">.</span>
           </a>
@@ -99,7 +110,7 @@ export const Navigation = ({ onNavigateSection }: NavigationProps) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-background pt-20"
+            className="fixed inset-0 z-40 bg-[#05070f]/98 backdrop-blur-2xl pt-20"
           >
             <div className="flex flex-col items-center gap-8 py-12">
               {navItems.map((item, index) => (

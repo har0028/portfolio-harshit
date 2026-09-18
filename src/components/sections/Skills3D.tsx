@@ -44,7 +44,7 @@ const skillCategories = [
 
 export const Skills3D: React.FC = () => {
   return (
-    <section id="skills" className="py-24 md:py-32 relative bg-secondary/20">
+    <section id="skills" className="py-24 md:py-32 relative">
       <div className="container px-6">
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -63,7 +63,7 @@ export const Skills3D: React.FC = () => {
           {skillCategories.map((category, index) => (
             <ScrollReveal key={category.title} delay={index * 0.1}>
               <TiltCard className="h-full">
-                <div className={`h-full p-6 rounded-2xl bg-gradient-to-br ${category.color} border border-border bg-card shadow-xl transition-all duration-300 hover:shadow-primary/10 group`}>
+                <div className={`h-full p-6 rounded-2xl bg-gradient-to-br ${category.color} border border-slate-800/90 bg-slate-950/90 backdrop-blur-md shadow-2xl transition-all duration-300 hover:shadow-primary/10 group`}>
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform">
                       <category.icon className="w-5.5 h-5.5 text-primary" />
@@ -74,7 +74,7 @@ export const Skills3D: React.FC = () => {
                     {category.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium bg-background/60 text-foreground border border-border/80 shadow-sm backdrop-blur-sm"
+                        className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-900/90 text-foreground border border-slate-700/60 shadow-sm backdrop-blur-sm"
                       >
                         {skill}
                       </span>

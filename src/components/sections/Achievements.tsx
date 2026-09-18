@@ -55,7 +55,7 @@ const achievements = [
 
 export const Achievements = () => {
   return (
-    <section id="achievements" className="py-24 md:py-32 relative bg-secondary/20">
+    <section id="achievements" className="py-24 md:py-32 relative">
       <div className="container px-6">
         <ScrollReveal>
           <div className="flex items-center gap-4 mb-12">
@@ -72,13 +72,13 @@ export const Achievements = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {achievements.map((item, index) => (
             <ScrollReveal key={item.title} delay={index * 0.08}>
-              <div className="h-full p-6 rounded-2xl bg-card border border-border hover:border-primary/40 transition-all duration-300 shadow-card flex flex-col justify-between">
+              <div className="h-full p-6 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-800/90 hover:border-primary/40 transition-all duration-300 shadow-2xl flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center border border-border`}>
                       <item.icon className="w-6 h-6" />
                     </div>
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-900/90 text-foreground border border-slate-700/60">
                       {item.issuer}
                     </span>
                   </div>

@@ -203,10 +203,10 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({ isOpen, onClose, o
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl h-[480px] rounded-2xl bg-card/95 border border-primary/40 shadow-2xl overflow-hidden flex flex-col backdrop-blur-xl"
+          className="w-full max-w-2xl h-[480px] rounded-2xl bg-slate-950/95 border border-slate-800/90 shadow-2xl overflow-hidden flex flex-col backdrop-blur-xl"
         >
           {/* Header */}
-          <div className="p-3 bg-secondary/80 border-b border-border flex items-center justify-between">
+          <div className="p-3 bg-slate-900/90 border-b border-slate-800/80 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Terminal className="w-4 h-4 text-primary" />
               <span className="font-mono text-xs font-bold text-foreground">harshit@portfolio:~ (zsh)</span>
@@ -217,7 +217,7 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({ isOpen, onClose, o
           </div>
 
           {/* Terminal Content Log */}
-          <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto font-mono text-xs space-y-4 bg-[#0a0a10]">
+          <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto font-mono text-xs space-y-4 bg-[#07090e]">
             {logs.map((log) => (
               <div key={log.id} className="space-y-1.5">
                 {log.command !== 'welcome' && (
@@ -237,7 +237,7 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({ isOpen, onClose, o
               e.preventDefault();
               handleCommand(input);
             }}
-            className="p-3 bg-card border-t border-border flex items-center gap-2 font-mono"
+            className="p-3 bg-slate-950/95 border-t border-slate-800/80 flex items-center gap-2 font-mono"
           >
             <span className="text-green-400 text-xs font-bold">$</span>
             <input
