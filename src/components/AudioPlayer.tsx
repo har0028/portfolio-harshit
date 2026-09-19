@@ -1,89 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Volume2, VolumeX, Volume1, Music, Sparkles } from 'lucide-react';
-import { toast } from 'sonner';
+import { useAudio } from '@/context/AudioContext';
 
 export const AudioPlayer: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.6);
+  const { isPlaying, isMuted, volume, togglePlay, toggleMute, setVolume } = useAudio();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    const audio = new Audio('/audio/interstellar.mp3');
-    audio.loop = true;
-    audio.volume = volume;
-    audioRef.current = audio;
-
-    // Handle audio events
-    const onEnded = () => setIsPlaying(false);
-    const onPause = () => setIsPlaying(false);
-    const onPlay = () => setIsPlaying(true);
-
-    audio.addEventListener('ended', onEnded);
-    audio.addEventListener('pause', onPause);
-    audio.addEventListener('play', onPlay);
-
-    return () => {
-      audio.removeEventListener('ended', onEnded);
-      audio.removeEventListener('pause', onPause);
-      audio.removeEventListener('play', onPlay);
-      audio.pause();
-      audio.src = '';
-    };
-  }, []);
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-          if (!hasInteracted) {
-            setHasInteracted(true);
-            toast.success('🎶 Ambient Music: Cornfield Chase - Hans Zimmer', {
-              description: 'Cinematic soundtrack active for 3D experience.',
-              duration: 3500,
-            });
-          }
-        })
-        .catch((err) => {
-          console.warn('Audio play prevented:', err);
-          toast.info('Click play to start background music.');
-        });
-    }
-  };
-
-  const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-      if (newVolume === 0) {
-        setIsMuted(true);
-      } else if (isMuted) {
-        setIsMuted(false);
-      }
-    }
-  };
-
-  const toggleMute = () => {
-    if (!audioRef.current) return;
-    if (isMuted) {
-      audioRef.current.volume = volume || 0.5;
-      setIsMuted(false);
-    } else {
-      audioRef.current.volume = 0;
-      setIsMuted(true);
-    }
-  };
 
   return (
     <div className="fixed bottom-6 left-6 z-40 select-none">
@@ -108,7 +30,7 @@ export const AudioPlayer: React.FC = () => {
           <button
             onClick={togglePlay}
             aria-label={isPlaying ? 'Pause Background Music' : 'Play Background Music'}
-            className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg hover:scale-105 active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg hover:scale-105 active:scale-95 transition-transform shrink-0"
           >
             {isPlaying ? (
               <Pause className="w-4 h-4 fill-white" />
@@ -139,7 +61,7 @@ export const AudioPlayer: React.FC = () => {
                 </span>
                 {isPlaying && (
                   <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-medium bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                    <Sparkles className="w-2.5 h-2.5" /> Live
+                    <Sparkles className="w-2.5 h-2.5" /> Playing
                   </span>
                 )}
               </div>
@@ -179,7 +101,7 @@ export const AudioPlayer: React.FC = () => {
                   max="1"
                   step="0.05"
                   value={isMuted ? 0 : volume}
-                  onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
                   className="w-16 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400"
                   aria-label="Volume Slider"
                 />

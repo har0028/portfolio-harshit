@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X, Search, Volume2, VolumeX } from 'lucide-react';
 import { CommandPalette } from './CommandPalette';
+import { useAudio } from '@/context/AudioContext';
 
 interface NavigationProps {
   onNavigateSection?: (section: string) => void;
@@ -17,6 +18,7 @@ const navItems = [
 ];
 
 export const Navigation = ({ onNavigateSection }: NavigationProps) => {
+  const { isPlaying, togglePlay } = useAudio();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -65,7 +67,7 @@ export const Navigation = ({ onNavigateSection }: NavigationProps) => {
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <a
                 key={item.label}
@@ -77,6 +79,33 @@ export const Navigation = ({ onNavigateSection }: NavigationProps) => {
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
+
+            {/* Music ON/OFF Button in Navbar */}
+            <button
+              onClick={togglePlay}
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all shadow-sm ${
+                isPlaying
+                  ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/25 shadow-[0_0_12px_rgba(6,182,212,0.25)]'
+                  : 'bg-secondary/60 hover:bg-secondary border-border text-muted-foreground hover:text-foreground'
+              }`}
+              title={isPlaying ? 'Click to Pause / Close Music' : 'Click to Play Ambient Music'}
+            >
+              {isPlaying ? (
+                <>
+                  <div className="flex items-end gap-0.5 h-3.5 w-3 justify-center">
+                    <span className="w-0.5 bg-cyan-400 rounded-full animate-[bounce_0.8s_ease-in-out_infinite] h-3" />
+                    <span className="w-0.5 bg-cyan-300 rounded-full animate-[bounce_0.6s_ease-in-out_infinite_0.2s] h-2" />
+                    <span className="w-0.5 bg-blue-400 rounded-full animate-[bounce_0.9s_ease-in-out_infinite_0.4s] h-3.5" />
+                  </div>
+                  <span>Music: On</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Music: Off</span>
+                </>
+              )}
+            </button>
 
             {/* Ctrl + K Shortcut Button */}
             <button
@@ -93,13 +122,31 @@ export const Navigation = ({ onNavigateSection }: NavigationProps) => {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Action Buttons */}
+          <div className="flex md:hidden items-center gap-2">
+            {/* Mobile Music Toggle */}
+            <button
+              onClick={togglePlay}
+              className={`p-2 rounded-xl border text-xs transition-all ${
+                isPlaying
+                  ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300'
+                  : 'bg-secondary/60 border-border text-muted-foreground'
+              }`}
+              title={isPlaying ? 'Pause Music' : 'Play Music'}
+              aria-label="Toggle Background Music"
+            >
+              {isPlaying ? <Volume2 className="w-4 h-4 text-cyan-400" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
+            </button>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-foreground"
+              aria-label="Toggle Menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </motion.nav>
 
