@@ -14,14 +14,15 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined);
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolumeState] = useState(0.5);
+  const [volume, setVolumeState] = useState(1.0); // Default 100% Full Volume
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isManuallyPausedRef = useRef(false);
 
   useEffect(() => {
     const audio = new Audio('/audio/interstellar.mp3');
     audio.loop = true;
-    audio.volume = 0.5;
+    audio.volume = 1.0; // Full volume
+    audio.preload = 'auto';
     audioRef.current = audio;
 
     const onPlay = () => setIsPlaying(true);
@@ -30,50 +31,55 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
 
-    // Attempt autoplay immediately
-    const startAudio = () => {
-      if (isManuallyPausedRef.current) return;
-      if (audioRef.current && audioRef.current.paused) {
+    // Play helper
+    const tryPlay = () => {
+      if (isManuallyPausedRef.current || !audioRef.current) return;
+      if (audioRef.current.paused) {
         audioRef.current
           .play()
           .then(() => {
             setIsPlaying(true);
+            cleanupListeners();
           })
           .catch(() => {
-            // Autoplay blocked by browser policy until interaction
+            // Browser autoplay policy requires user interaction
           });
       }
     };
 
-    startAudio();
+    // Immediate attempt on mount
+    tryPlay();
 
-    // Attach one-time global interaction listeners to start audio on first interaction if blocked
-    const handleFirstInteraction = () => {
-      if (!isManuallyPausedRef.current && audioRef.current && audioRef.current.paused) {
-        audioRef.current
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-          })
-          .catch((e) => console.warn('Audio play failed:', e));
-      }
-      removeListeners();
+    // Universal interaction listeners for instant playback
+    const events = [
+      'click',
+      'mousedown',
+      'mouseup',
+      'pointerdown',
+      'touchstart',
+      'touchend',
+      'scroll',
+      'keydown',
+      'wheel',
+      'mousemove',
+    ];
+
+    const handleInteraction = () => {
+      tryPlay();
     };
 
-    const removeListeners = () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('scroll', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
+    const cleanupListeners = () => {
+      events.forEach((evt) => {
+        window.removeEventListener(evt, handleInteraction);
+      });
     };
 
-    window.addEventListener('click', handleFirstInteraction, { passive: true });
-    window.addEventListener('scroll', handleFirstInteraction, { passive: true });
-    window.addEventListener('keydown', handleFirstInteraction, { passive: true });
-    window.addEventListener('touchstart', handleFirstInteraction, { passive: true });
+    events.forEach((evt) => {
+      window.addEventListener(evt, handleInteraction, { passive: true, once: false });
+    });
 
     return () => {
-      removeListeners();
+      cleanupListeners();
       audio.removeEventListener('play', onPlay);
       audio.removeEventListener('pause', onPause);
       audio.pause();
@@ -89,6 +95,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setIsPlaying(false);
     } else {
       isManuallyPausedRef.current = false;
+      audioRef.current.volume = volume || 1.0;
       audioRef.current
         .play()
         .then(() => setIsPlaying(true))
@@ -99,7 +106,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const toggleMute = () => {
     if (!audioRef.current) return;
     if (isMuted) {
-      audioRef.current.volume = volume || 0.5;
+      audioRef.current.volume = volume || 1.0;
       setIsMuted(false);
     } else {
       audioRef.current.volume = 0;
