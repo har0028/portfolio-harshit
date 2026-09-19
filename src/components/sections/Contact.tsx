@@ -63,37 +63,54 @@ export const Contact = () => {
         },
         body: JSON.stringify({
           _subject: `🚀 New Portfolio Message from ${senderName}`,
-          Name: senderName,
-          Email: senderEmail,
-          Message: messageContent,
+          _captcha: 'false',
           _template: 'table',
+          _replyto: senderEmail,
+          name: senderName,
+          email: senderEmail,
+          message: messageContent,
         }),
       });
 
       const resData = await response.json();
       console.log('FormSubmit response:', resData);
 
-      // Automated reply bubble in UI confirming actual email delivery
-      const replyMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'harshit',
-        text: `Thanks ${senderName}! 📩 Your message has been sent directly to my email inbox (harshitsati30@gmail.com). I will reply to ${senderEmail} as soon as possible!`,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
+      const isSuccess = response.ok && (resData.success === 'true' || resData.success === true);
 
-      setMessages((prev) => [...prev, replyMsg]);
-      toast.success('Email sent directly to Harshit!');
+      if (isSuccess) {
+        // Automated reply bubble in UI confirming actual email delivery
+        const replyMsg: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: 'harshit',
+          text: `Thanks ${senderName}! 📩 Your message has been sent directly to my Gmail inbox (harshitsati30@gmail.com). I will reply to ${senderEmail} as soon as possible!`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+
+        setMessages((prev) => [...prev, replyMsg]);
+        toast.success('Email sent directly to Harshit\'s Gmail!');
+      } else if (resData.message && resData.message.toLowerCase().includes('activation')) {
+        const replyMsg: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: 'harshit',
+          text: `Thanks ${senderName}! 📩 FormSubmit has sent a one-time activation link to harshitsati30@gmail.com. Once activated, your message is queued, and you can also email directly at harshitsati30@gmail.com.`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+        setMessages((prev) => [...prev, replyMsg]);
+        toast.info('Form activation email sent to Harshit\'s Gmail');
+      } else {
+        throw new Error(resData.message || 'Failed to send email');
+      }
     } catch (error) {
       console.error('Email sending error:', error);
       // Fallback message bubble
       const replyMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'harshit',
-        text: `Thanks ${senderName}! Your message is recorded. If you don't hear back, you can also reach me directly at harshitsati30@gmail.com.`,
+        text: `Thanks ${senderName}! I received your note. If you don't hear back, you can also reach me directly at harshitsati30@gmail.com.`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, replyMsg]);
-      toast.success('Message received!');
+      toast.error('Could not send automatically. You can email directly to harshitsati30@gmail.com');
     } finally {
       setIsSending(false);
     }
