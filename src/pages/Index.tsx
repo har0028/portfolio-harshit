@@ -8,6 +8,7 @@ import { Projects3D } from '@/components/sections/Projects3D';
 import { Achievements } from '@/components/sections/Achievements';
 import { Contact } from '@/components/sections/Contact';
 import { AskHarshitAI } from '@/components/AskHarshitAI/AskHarshitAI';
+import { AudioPlayer } from '@/components/AudioPlayer';
 import { Workspace3D } from '@/components/3d/Workspace3D';
 import { toast } from 'sonner';
 
@@ -60,6 +61,7 @@ const Index = () => {
         <Contact />
       </main>
       <AskHarshitAI />
+      <AudioPlayer />
     </div>
   );
 };
